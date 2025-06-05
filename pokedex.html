@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Fire Red - Pokédex</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="site-title">Pokémon Fire Red</h1>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                    <li class="nav-item"><a href="pokedex.html" class="nav-link">Pokédex</a></li>
+                    <li class="nav-item"><a href="characters.html" class="nav-link">Personagens</a></li>
+                    <li class="nav-item"><a href="story.html" class="nav-link">História</a></li>
+                    <li class="nav-item"><a href="gym_leaders.html" class="nav-link">Líderes de Ginásio</a></li>
+                    <li class="nav-item"><a href="elite_four.html" class="nav-link">Elite Four</a></li>
+                    <li class="nav-item"><a href="gallery.html" class="nav-link">Galeria</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content container">
+        <section class="pokedex-section">
+            <h2 class="section-title">Pokédex de Kanto</h2>
+            <p>Use a barra de pesquisa abaixo para encontrar informações sobre qualquer Pokémon da região de Kanto (e além!). Digite o nome ou o número da Pokédex.</p>
+
+            <div class="pokedex-search">
+                <input type="text" id="pokemonInput" placeholder="Digite o nome ou ID do Pokémon (ex: pikachu ou 25)">
+                <button id="searchButton">Buscar Pokémon</button>
+            </div>
+
+            <div id="pokemonResult" class="pokemon-card-container">
+                <p>Nenhum Pokémon buscado ainda. Tente "Charmander" ou "1".</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Pokémon Fire Red Fan Site. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const pokemonInput = document.getElementById('pokemonInput');
+            const searchButton = document.getElementById('searchButton');
+            const pokemonResultDiv = document.getElementById('pokemonResult');
+
+            
+            searchButton.addEventListener('click', fetchPokemon);
+            // Adiciona um listener de evento para a tecla 'Enter' no campo de input
+            pokemonInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    fetchPokemon();
+                }
+            });
+
+            /**
+             * Função assíncrona para buscar dados de Pokémon na API.
+             */
+            async function fetchPokemon() {
+                // Limpa o conteúdo anterior da div de resultados
+                pokemonResultDiv.innerHTML = '<p>Buscando Pokémon...</p>';
+                const pokemonNameOrId = pokemonInput.value.toLowerCase().trim(); // Obtém o valor do input e o formata
+
+                // Verifica se o campo de input está vazio
+                if (!pokemonNameOrId) {
+                    pokemonResultDiv.innerHTML = '<p style="color: #e3350d;">Por favor, digite o nome ou ID de um Pokémon.</p>';
+                    return;
+                }
+
+                try {
+                    // Faz a requisição para a PokeAPI
+                    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonNameOrId}`);
+
+                    // Verifica se a resposta da API foi bem-sucedida
+                    if (!response.ok) {
+                        // Lança um erro se o Pokémon não for encontrado (status 404) ou outro erro de rede/servidor
+                        if (response.status === 404) {
+                            throw new Error('Pokémon não encontrado. Verifique o nome ou ID.');
+                        } else {
+                            throw new Error(`Erro ao buscar Pokémon: ${response.statusText}`);
+                        }
+                    }
+
+                    const data = await response.json(); // Converte a resposta para JSON
+
+                    // Renderiza o cartão do Pokémon com os dados recebidos
+                    displayPokemon(data);
+
+                } catch (error) {
+                    // Exibe mensagens de erro para o usuário
+                    pokemonResultDiv.innerHTML = `<p style="color: #e3350d;">Erro: ${error.message}</p>`;
+                    console.error('Erro ao buscar Pokémon:', error); // Log do erro no console para depuração
+                }
+            }
+
+            /**
+             * Função para exibir os dados do Pokémon na página.
+             * @param {Object} pokemonData - Objeto contendo os dados do Pokémon.
+             */
+            function displayPokemon(pokemonData) {
+                // Limpa a div de resultados antes de adicionar o novo cartão
+                pokemonResultDiv.innerHTML = '';
+
+                // Cria o elemento do cartão do Pokémon
+                const pokemonCard = document.createElement('div');
+                pokemonCard.classList.add('pokemon-card');
+
+                // Obtém a imagem do Pokémon (sprite frontal padrão)
+                const imageUrl = pokemonData.sprites.front_default || 'https://placehold.co/150x150/cccccc/333333?text=N/A';
+
+                // Mapeia os tipos do Pokémon para elementos span
+                const typesHtml = pokemonData.types.map(typeInfo =>
+                    `<span style="background-color: ${getTypeColor(typeInfo.type.name)};">${typeInfo.type.name}</span>`
+                ).join(''); // Junta os spans em uma única string
+
+                // Mapeia as habilidades do Pokémon para elementos li
+                const abilitiesHtml = pokemonData.abilities.map(abilityInfo =>
+                    `<li>${abilityInfo.ability.name}</li>`
+                ).join('');
+
+                // Preenche o HTML do cartão do Pokémon
+                pokemonCard.innerHTML = `
+                    <img src="${imageUrl}" alt="${pokemonData.name}">
+                    <h3>${pokemonData.name}</h3>
+                    <p><strong>ID:</strong> #${pokemonData.id}</p>
+                    <p><strong>Altura:</strong> ${pokemonData.height / 10} m</p>
+                    <p><strong>Peso:</strong> ${pokemonData.weight / 10} kg</p>
+                    <p class="pokemon-types"><strong>Tipos:</strong> ${typesHtml}</p>
+                    <p><strong>Habilidades:</strong></p>
+                    <ul>${abilitiesHtml}</ul>
+                `;
+
+                // Adiciona o cartão do Pokémon à div de resultados
+                pokemonResultDiv.appendChild(pokemonCard);
+            }
+
+            /**
+             * Retorna uma cor de fundo para o tipo de Pokémon.
+             * @param {string} type - O nome do tipo do Pokémon.
+             * @returns {string} - A cor hexadecimal correspondente ao tipo.
+             */
+            function getTypeColor(type) {
+                switch (type) {
+                    case 'normal': return '#A8A77A';
+                    case 'fire': return '#EE8130';
+                    case 'water': return '#6390F0';
+                    case 'grass': return '#7AC74C';
+                    case 'electric': return '#F7D02C';
+                    case 'ice': return '#96D9D6';
+                    case 'fighting': return '#C22E28';
+                    case 'poison': return '#A33EA1';
+                    case 'ground': return '#E2BF65';
+                    case 'flying': return '#A98FF3';
+                    case 'psychic': return '#F95587';
+                    case 'bug': return '#A6B91A';
+                    case 'rock': return '#B6A136';
+                    case 'ghost': return '#735797';
+                    case 'dragon': return '#6F35FC';
+                    case 'steel': return '#B7B7CE';
+                    case 'dark': return '#705746';
+                    case 'fairy': return '#D685AD';
+                    default: return '#777'; // Cor padrão para tipos desconhecidos
+                }
+            }
+        });
+    </script>
+</body>
+</html>

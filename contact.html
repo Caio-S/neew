@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Fire Red - Contato</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="site-title">Pokémon Fire Red</h1>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                    <li class="nav-item"><a href="pokedex.html" class="nav-link">Pokédex</a></li>
+                    <li class="nav-item"><a href="characters.html" class="nav-link">Personagens</a></li>
+                    <li class="nav-item"><a href="story.html" class="nav-link">História</a></li>
+                    <li class="nav-item"><a href="gym_leaders.html" class="nav-link">Líderes de Ginásio</a></li>
+                    <li class="nav-item"><a href="elite_four.html" class="nav-link">Elite Four</a></li>
+                    <li class="nav-item"><a href="gallery.html" class="nav-link">Galeria</a></li>
+                    <li class="nav-item"><a href="contact.html" class="nav-link">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content container">
+        <section class="contact-section">
+            <h2 class="section-title">Entre em Contato</h2>
+            <p>Tem alguma sugestão, dúvida ou apenas quer dizer "olá"? Use o formulário abaixo para nos enviar uma mensagem!</p>
+
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" name="name" required placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="seu.email@exemplo.com">
+                </div>
+                <div class="form-group">
+                    <label for="subject">Assunto:</label>
+                    <input type="text" id="subject" name="subject" placeholder="Assunto da mensagem">
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensagem:</label>
+                    <textarea id="message" name="message" rows="6" required placeholder="Digite sua mensagem aqui..."></textarea>
+                </div>
+                <button type="submit" class="submit-button">Enviar Mensagem</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 30px; font-style: italic; color: #777;">
+                Este formulário é apenas para fins de demonstração e não envia mensagens.
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Pokémon Fire Red Fan Site. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
